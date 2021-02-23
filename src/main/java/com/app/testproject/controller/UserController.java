@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,11 +23,6 @@ public class UserController {
     @Autowired
     //private UserServices userServices;
     private UserRepository userRepo;
-
-    @GetMapping(path="/date")
-    public @ResponseBody Date getDate() {
-        return new Date();
-    }
 
     @PostMapping(path="/new-user")
     public @ResponseBody User addUser (@RequestParam String name, @RequestParam String email, @RequestParam String pass) {
@@ -45,9 +41,9 @@ public class UserController {
 		return userRepo.findAll();
 	}
 
-    @GetMapping(path="/find-user")
-	public @ResponseBody Optional<User> getUserById(@RequestParam Integer id) {
-		return userRepo.findById(id);
+    @GetMapping(path="/find/{id}")
+	public @ResponseBody Optional<User> getUserById(@PathVariable String id) {
+		return userRepo.findById(Integer.valueOf(id));
 	}
 
     @GetMapping(path="/users")
@@ -69,4 +65,6 @@ public class UserController {
         userRepo.delete(user.get());
         return "User Deleted";
     }
+
+    
 }
