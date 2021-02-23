@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,16 +47,8 @@ public class UserController {
 		return userRepo.findById(Integer.valueOf(id));
 	}
 
-    @GetMapping(path="/users")
-    public @ResponseBody Iterable<User> getUsers() {
-        String role = "USER";
-        return userRepo.findByRole(role);
-    }
-
-    @GetMapping(path="/admin")
-    public @ResponseBody Iterable<User>
-    getUserByRole() {
-        String role = "ADMIN";
+    @GetMapping(path="/{role}")
+    public @ResponseBody Iterable<User> getUsers(@RequestParam String role) {
         return userRepo.findByRole(role);
     }
 
@@ -66,5 +59,14 @@ public class UserController {
         return "User Deleted";
     }
 
-    
+    @PostMapping(path="/update-user/{id}")
+    public @ResponseBody String updateUser(@PathVariable String id, @RequestParam String name, @RequestParam String email, @RequestParam String pass) {
+        Optional<User> user = userRepo.findById(Integer.valueOf(id));
+        User userUpdated = user.get();
+        userUpdated.setName(name);
+        userUpdated.setEmail(email);
+        userUpdated.setPass(pass);
+        userRepo.save(userUpdated);
+        return "User Updated";
+    }
 }
